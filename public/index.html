@@ -1,0 +1,514 @@
+<!doctype html>
+<html>
+<!-- ==================== START OF HEAD ==================== -->
+<head>
+  <title>COACH: AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+  <!-- We've included a slightly modified version of A-Frame, which fixes some polish concerns -->
+  <script src="//cdn.8thwall.com/web/aframe/8frame-0.8.2.min.js"></script>
+
+  <!-- XR Extras - provides utilities like load screen, almost there, and error handling.
+         See github.com/8thwall/web/xrextras -->
+  <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
+  <!-- <script src="../xrextras/src/xrextras.js"></script> -->
+ 
+  <!-- 8thWall Web - Replace the app key here with your own app key -->
+  <script
+    src="//apps.8thwall.com/xrweb?appKey=cl9BroHqQAadHlQfBVNgYD0AKfiSDVDvjNuCSYAn2XS0ZuMNBduG0lpU51RNOL3nohzy7n"></script>
+
+  <!-- A-FRAME animation -->
+  <script src="https://unpkg.com/aframe-animation-component@^5.1.2/dist/aframe-animation-component.min.js"></script>
+
+  <!-- A-FRAME particle system -->
+  <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+
+  <!-- A-FRAME extras -->
+  <script src="//cdn.8thwall.com/web/aframe/aframe-extras-4.2.0.min.js"></script>
+
+  
+  <link rel="stylesheet" type="text/css" href="./styles/index.css">
+  <link rel="stylesheet" href="./styles/animations.css">
+
+  <!-- client code -->
+  <script src="./js/aframe-spritesheet-component.min.js"></script>
+  <script src="./js/aframe-lerp-component.min.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="./js/loading_screen.js"></script>
+  <script src="./js/make_waves_shader.js"></script>
+  <!-- <script src="./js/login_screen.js"></script> -->
+
+  
+
+</head>
+<!-- ===================== END OF HEAD ===================== -->
+
+<!-- ======================================================= -->
+
+<!-- ==================== START OF BODY ==================== -->
+<body>
+    
+    
+    <!-- =========== START OF LOGIN AND INFO PAGES ========= -->
+
+    <div id="loginPage">
+        <div class="pageBG">
+            <div id="loginTitle" class="center centerText">
+                <img id="coachLogo"
+                    src="./images/coach_logo _ 512.png"
+                    alt="coach logo"
+                    height="87px"
+                    width="250px">
+                    <h5 id="errorMessage"></h5>
+            </div>
+            <div id="loginForm" class="center centerText">
+                <form>
+                    <!-- <h7>Name: </h7> <br> -->
+                    <input type="text" name="name" placeholder="Name" id="loginName"> <br>
+                    <!-- <h7>Email: </h7> <br> -->
+                    <input type="email" name="email" placeholder="Email" id="loginEmail"> <br><br>
+                    <input type="button" value="BRING NY TO LIFE" id="loginButton">
+                </form>
+            </div>
+            
+            <div id="privacyPolicy" class="center centerText">
+                <a href="https://coachaustralia.com/page/privacy-policy"><h5>Our Privacy Policy</h5></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoPage" class="hidden">
+        <div class="pageBG">
+            <div id="backButton">
+                <img src="./images/back_arrow.png" alt="back arrow" id="backArrowImage"
+                height="35px"
+                width="35px">
+            </div>
+            <div id="infoTitle" class="center centerText">
+                <img id="coachLogo"
+                        src="./images/coach_logo _ 512.png"
+                        alt="coach logo"
+                        height="87px"
+                        width="250px">
+            </div>
+            <div id="infoDescription" class="center centerText">
+                <h8 id="infoDescriptionText"> To activate your AR experience <br>
+                    point the camera in your browser at <br>
+                    one of the below targets.</h8>
+                <div id="infoTargets" class="center centerText">
+                    <div id="infoTarget1">
+                        <img src="./images/targets_side_by_side_410x200.png" alt="">
+                    </div>
+                    <!-- <div id="infoTarget2">
+                        
+                    </div> -->
+                </div>
+            </div>
+            <div id="infoButtonDiv" class="center centerText">
+                <input type="button" value="GOT IT!" id="gotItButton">
+            </div>     
+        </div>
+    </div>
+
+    <div id="8thWallContainer">
+        <div id="_8thWallDisclaimer" class="center centerText">
+            <h6 id="poweredByText">AR Experience powered by </h6>
+            <img id="_8thWallLogo"
+                src="./images/8thWallLogo_256.png"
+                alt="coach logo"
+                height="50px"
+                width="100px">
+        </div>
+    </div>
+     <!-- =============== END OF LOGIN AND INFO PAGES ============= -->
+
+    <!-- ==================== START OF A-SCENE ==================== -->
+
+    <a-scene id="aScene"
+        xrweb
+        xrextras-almost-there
+        xrextras-loading
+        customize-loading-icon
+        powered_by_8th_wall
+        xrextras-runtime-error
+        >   
+
+        <a-assets>
+            <a-asset-item id="ferry" src="./3d_models/ferry1.glb"></a-asset-item>
+            <a-asset-item id="lifeRing" src="./3d_models/life_ring.glb"></a-asset-item>
+            <a-asset-item id="dino_main" src="./3d_models/dino_baked1.glb"></a-asset-item>
+            <a-asset-item id="dino_mini" src="./3d_models/static_dino_baked.glb"></a-asset-item>
+            <!-- <img id="skyline" src="./images/NYC_Skyline_Motifs_2048x1024.png"> -->
+            <img id="skylineNoDinos" src="./images/NYC_Skyline_No_Dinos_2048x1024.png">
+            <img id="skylineJustDinos" src="./images/NYC_Skyline_Just_Dinos_2048x1024.png">
+            <img id="skylineReflection" src="./images/Water_Comp01_City_SpriteSheet02.png">
+            <img id="leaf" src="./images/Leaf_64x64.png">
+            <!-- <img id="waterSprite" src="./images/Water_Comp03_SpriteSheet01.jpg"> -->
+            <img id="water" src="./images/water_type_2_thin_1.png">
+            <img id="skyMat" src="./images/Sky_Mirrored_24_BlueFade03.jpg">
+            <img id="waterFadeMat" src="./images/WaterCircleTexture04.png">
+            <img id="mainDino_Shadow" src="./images/DinoShadowPlaneBaked01_512.png">
+        </a-assets>
+
+
+        <a-camera
+            id="camera"
+            position="0 1 5"
+            fov="80"
+            camera-orientation>
+        </a-camera>
+
+        <!-- START OF WINDOW -->
+        <a-entity id="window_parent">
+            <a-entity id="window_orientataion"
+            position="0 0 0"
+            rotation="0 0 90">
+
+                <a-entity scale="1.1 1.1 1.2">
+                    <!-- right box -->
+                    <a-box class="hider_box"
+                    id="portalDoor"
+                    position="0 0 0"
+                    scale="15 15 0.01"
+                    hider-material
+                    portal_open="speed: 1; from: 6 0 0; to: 8.75 0 0"></a-box>
+                    <!-- right border -->
+                    <a-plane position="0 0.75 0" scale="2.5 0.05 1" color="#9c9c9c"></a-plane>
+
+                    <!-- left box -->
+                    <a-box class="hider_box"
+                    position="-8.75 0 0"
+                    scale="15 15 0.01"
+                    hider-material></a-box>
+                    <!-- left border -->
+                    <a-plane position="0 -0.75 0" scale="2.5 0.05 1" color="#9c9c9c"></a-plane>
+                    
+                    <!-- above box -->
+                    <a-box class="hider_box"
+                    position="0 8.25 0"
+                    scale="15 15 0.01"
+                    hider-material></a-box>
+                    <!-- above border -->
+                    <a-plane position="1.25 0 0" scale="0.1 1.5 1" color="#9c9c9c"></a-plane>
+
+                    <!-- below box -->
+                    <a-box class="hider_box"
+                    position="0 -8.25 0"
+                    scale="15 15 0.01"
+                    hider-material></a-box>
+                    <!-- below border -->
+                    <a-plane position="-1.25 0 0" scale="0.1 1.5 1" color="#9c9c9c"></a-plane>
+
+                </a-entity>
+
+                <!-- floor box -->
+                <a-box class="hider_box_floor"
+                position="-2 -2 7.5"
+                rotation="0 90 0"
+                scale="15 15 0.01"
+                hider-material></a-box>
+
+                <a-box position=" -2 0 1.5"
+                scale="0.2 17 3"
+                hider-material></a-box>
+                
+            </a-entity>
+        </a-entity>
+        <!-- END OF WINDOW -->
+
+        <a-entity id="world_parent">
+            <a-entity id="world_objects"
+            scale="0 0 0"
+            
+            lerp="properties: position, rotation, scale">
+
+                <a-torus id="overflowBlockingTorus"
+                color="#FFC65D"
+                scale=" 67 67 1"
+                rotate="0 0 90"
+                hider-material></a-torus>
+
+
+                <a-light type="ambient" color="white" position="0 15 0" intensity="1.5"></a-light>
+
+                <a-entity 
+                id="skySphere_full"
+                rotation="-90 0 0"
+                geometry="primitive: sphere; radius: -40; segmentsWidth: 18; segmentsHeight: 18; thetaLength: 180;"
+                material="src: #skyMat; offset: 0 -1; repeat: 1 2; flatShading: false"></a-entity>
+
+                <a-entity 
+                id="skySphere_portal"
+                rotation="-270 0 0"
+                geometry="primitive: sphere; radius: -40; segmentsWidth: 18; segmentsHeight: 18; thetaLength: 180; phiStart: -20; phiLength: 200"
+                material="src: #skyMat; offset: 0.5 0; repeat: 1 -2; flatShading: false"></a-entity>
+
+
+                <!-- water fade plane -->
+                <a-plane position="0 0 0.2"
+                rotation="0 0 0"
+                scale="80 80 80"
+                material="src: #waterFadeMat; transparent: true"></a-plane>
+
+
+                <!-- water -->
+                <!-- <a-entity id="water_1"
+                rotation="0 0 0"
+                tiled_water_sprite-sheet_spawn="scale: 10; rows: 10; columns: 10"
+                water_sprite_group
+                animation__scale="property: scale; from: 1 1 1; to: 1.05 1.05 1.05; dir: alternate; dur: 2500; easing: linear; loop: true"
+                animation__position="property: position; from: 0 0 0; to: -10 -10 0; dur: 5000; easing: linear; loop: true"
+                lerp="properties: position, scale"
+                ></a-entity> -->
+                <a-plane rotation="0 0 90"
+                position="0 0 0"
+                scale="10 10 1"
+                width="10" height="10"
+                segments-height="10" segments-width="10"
+                roughness="0"
+                metalness="0"
+                env-map= "#skyMat"
+                material="shader: makewaves; color: #222670; uMap: #water; repeat: 10 10"></a-plane>
+                
+                <!-- START OF BOATS -->
+                <a-entity
+                animation="property: rotation; to: 0 0 360; dur: 15000; easing: linear; loop: true" 
+                lerp="properties: position, rotation, scale">
+                
+                    <a-entity id="boats"
+                        position="0 0 0"
+                        rotation="90 0 0" >
+                        
+                        <!-- BOAT 1 -->
+                        <a-entity id="boat_1_bob_animation"
+                        position="0 -0.8 0"
+                        animation ="property: position; from: 0 -0.05 0; to: 0 0.4 0; dir: alternate; dur: 2000; easing: linear; loop: true">
+                            <a-entity
+                                boat="boat_num: 1; radius: 10"
+                                scale="0.1 0.1 0.1"
+                                position="0 0 5"
+                                rotation="0 -25 0" 
+                                gltf-model="#ferry">
+
+                                <!-- MINI REX 1 -->
+                                <a-entity id="mini_rex_1"
+                                position="20 11 0"
+                                rotation="0 0 0"
+                                scale="0.37 0.37 0.37"
+                                gltf-model="#dino_mini">
+                                </a-entity>
+                                <!-- REXES CAN BE RESET TO CENTER OF BOAT WITH POSIIOTN: 0 11 0 -->
+
+                            </a-entity>
+                        </a-entity>
+
+                        <!-- BOAT 2 -->
+                        <a-entity id="boat_2_bob_animation"
+                        position="0 -0.8 0"
+                        animation ="property: position; from: 0 -0.05 0; to: 0 0.5 0; dir: alternate; dur: 3000; easing: linear; loop: true">
+                            <a-entity
+                                boat="boat_num: 2; radius: 10"
+                                scale="0.1 0.1 0.1"
+                                position="0 0 -5"
+                                rotation="0 -140 0"
+                                gltf-model="#ferry">
+
+                                <!-- MINI REX 2 -->
+                                <a-entity id="mini_rex_2"
+                                position="-12 11 0"
+                                rotation="0 0 0"
+                                scale="0.4 0.4 0.4"
+                                gltf-model="#dino_mini">
+                                </a-entity>
+
+
+                            </a-entity>
+                        </a-entity>
+
+                        <!-- BOAT 3 -->
+                        <a-entity id="boat_3_bob_animation"
+                        position="0 -0.8 0"
+                        animation ="property: position; from: 0 -0.05 0; to: 0 0.4 0; dir: alternate; dur: 2500; easing: linear; loop: true">
+                            <a-entity
+                                boat="boat_num: 3; radius: 10"
+                                scale="0.1 0.1 0.1"
+                                position="0 0 0"
+                                rotation="0 100 0"
+                                gltf-model="#ferry">
+
+                                <!-- MINI REX 3 -->
+                                <a-entity id="mini_rex_3"
+                                position="0 11 1.25"
+                                rotation="0 0 0"
+                                scale="0.5 0.5 0.5"
+                                gltf-model="#dino_mini">
+                                </a-entity>
+
+                            </a-entity>
+                        </a-entity>
+                    
+                    </a-entity>
+
+
+                </a-entity>
+                <!-- END OF BOATS -->
+
+                <!-- START OF LIFE RING SCENE -->
+                <a-entity id="life_ring_scene"
+                position="-1 -5 0"
+                rotation="90 0 0"
+                scale="0.5 0.5 0.5">
+                <!-- position="-8.5 -1 0" -->
+                <!-- RING SCENE Y_AXIS ROTATION -->
+                    <a-entity
+                    rotation="0 0 0">
+
+                    <!-- Ring 1 -->
+                        <a-entity id="bob_movement_ring_1"
+                        position="-3 0 0"
+                        rotation="0 -100 0"
+                        scale="0.3 0.3 0.3"
+                        animation="property: position; from: -3 0 0; to: -3.5 0.25 0; dir: alternate; dur: 2500; loop: true">
+                            <a-entity id="ring_1"
+                            gltf-model="#lifeRing"
+                            animation="property: position; from: 0 0 0; to: 0 0 2; dir: alternate; dur: 6000; loop: true">
+                            <!-- animation__rotation="property: rotation; from: 0 0 0; to: 0 0 60; dir: alternate; dur: 5000; loop: true"> -->
+
+                            <!-- Ring 1 Dino -->
+                                <a-entity id="ringDino_1"
+                                position="0 -7 0"
+                                
+                                scale="0.3 0.3 0.3"
+                                gltf-model="#dino_mini"></a-entity>
+                            </a-entity>
+                        </a-entity>
+
+                    <!-- Ring 2 -->
+                        <a-entity id="bob_movement_ring_2"
+                        position="3 0 0"
+                        rotation="0 300 0"
+                        scale="0.3 0.3 0.3"
+                        animation="property: position; from: 3 0 0; to: 3.5 0.25 0; dir: alternate; dur: 2000; loop: true">
+                            <a-entity id="ring_2"
+                            gltf-model="#lifeRing"
+                            animation="property: position; from: 0 0 0; to: 0 0 2; dir: alternate; dur: 5000; loop: true">
+                            <!-- animation__rotation="property: rotation; from: 0 0 0; to: 0 0 60; dir: alternate; dur: 4000; loop: true"> -->
+
+                            <!-- Ring 2 Dino -->
+                                <a-entity id="ringDino_2"
+                                position="0 -7 0"
+                                rotation="0 0 0"
+                                scale="0.3 0.3 0.3"
+                                gltf-model="#dino_mini"></a-entity>
+                            </a-entity>
+                        </a-entity>
+                    </a-entity>
+                </a-entity>
+
+                
+
+                <!-- START OF MAIN REX -->
+                <a-entity id="t-rex"
+                    position="0 0 0.21"
+                    rotation="270 90 90"
+                    scale="20 20 20"
+                    gltf-model="#dino_main"
+                    dino_animation>
+                </a-entity>        
+                
+                <a-entity id="mainDino_Shadow_Scale"
+                scale="0 0 1">
+                    <a-image
+                    position="-1 0 0.21"
+                    rotation="0 0 180"
+                    scale="13 13 13"
+                    src="#mainDino_Shadow"
+                    material="transparent: true; opacity: 0.7"></a-image>
+                </a-entity>
+                <!-- END OF MAIN REX -->
+                
+                <!-- START OF SKYLINE -->
+                <a-entity position="0 3 1.2"
+                scale="2 2 2">
+                    <a-plane
+                        id="skylinePlane"
+                        position="0 8 7"
+                        rotation="90 0 0"
+                        scale="0.025 0.03 0.03"
+                        
+                        height="512"
+                        width="1024"
+                        material="src: #skylineNoDinos; transparent: true;">
+                    </a-plane>
+                </a-entity>
+
+                <a-entity position="0 3 1.2"
+                scale="2 2 2">
+                    <a-plane
+                        id="skylinePlaneJustDinos"
+                        position="0 8 7"
+                        rotation="90 0 0"
+                        scale="0.025 0.03 0.03"
+                        
+                        height="512"
+                        width="1024"
+                        material="src: #skylineJustDinos; transparent: true;">
+                    </a-plane>
+                </a-entity>
+
+                <a-entity scale="2 1.5 1">
+                    <a-plane id="skylineReflectionPlane"
+                    position="0 8 0.5"
+                    rotation="0 0 0"
+                    scale="3.8 2 2"
+
+                    height="5.12"
+                    width="10.24"
+
+                    src="#skylineReflection"
+                    sprite-sheet="cols: 3; rows: 3; progress: 0"
+                    material="transparent: true;"
+                    skyline-reflection-sprite-sheet="speed: 0.5"></a-plane>
+                </a-entity>
+                <!-- END OF SKYLINE -->
+
+                <!-- START OF PARTICLE SYSTEM -->
+                <a-entity 
+                rotation="90 0 0"
+                position="0 0 30"
+                custom-particle-system="src: #leaf; maxParticles: 80; spawnRadius: 16; speed: 2; boundaryDistance: 35;"></a-entity>
+                <!-- END OF PARTICLE SYSTEM -->
+
+            </a-entity>
+            <!-- END OF WORLD -->
+        </a-entity> 
+        <!-- END OF WORLD PARENT -->
+
+        <!-- TARGETS -->
+        <!-- Note: "name:" must be set to the name of the image target uploaded to the 8th Wall Console -->
+        <a-entity image-target>
+            <!-- static colour sky -->
+            <a-entity id="portalWorldPosition"
+            position="0 -2 -9"></a-entity>
+           
+        </a-entity>
+        <!-- END OF TARGETS -->
+
+        
+
+    </a-scene>
+    <!-- ===================== END OF A-SCENE ===================== -->
+<!-- AFTER BODY SCRIPTS -->
+
+</body>
+<!-- ===================== END OF BODY ===================== -->
+
+<!-- REFERENCES -->
+<!-- <a href="https://icons8.com/icon/42333/save">Save icon by Icons8</a> -->
+
+<!-- SCRIPTS -->
+<script src="./js/login_screen.js"></script>
+
+<!-- ======================================================= -->
+</html>
